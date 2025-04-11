@@ -16,3 +16,15 @@ Colecao cadastrar_item(){
     return item;
 }
 
+void gerar_arquivo(Colecao dados){
+    FILE *arquivo = fopen("colecao.txt", "a");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo!\n");
+        return;
+    }
+    
+    fprintf(arquivo, "Identificador: %d\nDescricao: %s\nQuantidade: %d,", dados.identificador, dados.descricao, dados.quantidade);
+    
+    fclose(arquivo);
+}
+
