@@ -4,6 +4,6 @@ typedef struct{
     int quantidade;
 } Colecao;
 
-Colecao cadastrar_item(Colecao item){
-}
+Colecao cadastrar_item();
+void gerar_arquivo(Colecao dados);
 
