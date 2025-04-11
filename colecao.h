@@ -5,5 +5,6 @@ typedef struct{
 } Colecao;
 
 Colecao cadastrar_item();
+void limpar_buffer();
 void gerar_arquivo(Colecao dados);
 
