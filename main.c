@@ -13,6 +13,6 @@ int main(){
 
     if(escolha == 1){
         dados = cadastrar_item();
-        
+        gerar_arquivo(dados);
     }
 }
