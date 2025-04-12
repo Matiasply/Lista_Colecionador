@@ -32,7 +32,7 @@ void gerar_arquivo(Colecao dados){
         return;
     }
     
-    fprintf(arquivo, "Identificador: %d\nDescricao: %s\nQuantidade: %d,", dados.identificador, dados.descricao, dados.quantidade);
+    fprintf(arquivo, "Identificador: %d\nDescricao: %s\nQuantidade: %d\n", dados.identificador, dados.descricao, dados.quantidade);
     
     fclose(arquivo);
 }
