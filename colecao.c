@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "colecao.h"
 
 void limpar_buffer() {
@@ -32,8 +33,48 @@ void gerar_arquivo(Colecao dados){
         return;
     }
     
-    fprintf(arquivo, "Identificador: %d\nDescricao: %s\nQuantidade: %d,", dados.identificador, dados.descricao, dados.quantidade);
+    fprintf(arquivo, "%d;%s;%d\n", dados.identificador, dados.descricao, dados.quantidade);
     
     fclose(arquivo);
 }
 
+void consultar_item(char *str, int identificador) {
+    Colecao item; // Alterado para uma variável local, em vez de um ponteiro
+    char *token, linha[60];
+    int encontrado = 0; // Flag para verificar se o item foi encontrado
+
+    FILE *dados = fopen(str, "r");
+
+    if (dados == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
+
+    while (fgets(linha, sizeof(linha), dados)) {
+        token = strtok(linha, ";");
+        while (token != NULL) {
+            if (atoi(token) == identificador) {
+                item.identificador = atoi(token);
+                token = strtok(NULL, ";");
+                strncpy(item.descricao, token, sizeof(item.descricao) - 1);
+                item.descricao[sizeof(item.descricao) - 1] = '\0'; // Garantir terminação da string
+                token = strtok(NULL, ";");
+                item.quantidade = atoi(token);
+                encontrado = 1; // Item encontrado
+                break; // Sair do loop interno
+            }
+            token = strtok(NULL, ";");
+        }
+        if (encontrado) break; // Sair do loop externo
+    }
+
+    fclose(dados); // Fechar o arquivo após a leitura
+
+    if (!encontrado) {
+        printf("Item inexistente!\n");
+    } else {
+        printf("Identificador: %d\n", item.identificador);
+        printf("Descricao: %s\n", item.descricao);
+        printf("Quantidade: %d\n", item.quantidade);
+    }
+}
