@@ -78,3 +78,36 @@ void consultar_item(char *str, int identificador) {
         printf("Quantidade: %d\n", item.quantidade);
     }
 }
+
+void listar_acervo(char *str) {
+    Colecao item; // Alterado para uma variável local, em vez de um ponteiro
+    char *token, linha[60];
+    
+
+    FILE *dados = fopen(str, "r");
+
+    if (dados == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
+
+    while (fgets(linha, sizeof(linha), dados)) {
+        token = strtok(linha, ";");
+        while (token != NULL) {     
+                item.identificador = atoi(token);
+                token = strtok(NULL, ";");
+                strncpy(item.descricao, token, sizeof(item.descricao) - 1);
+                item.descricao[sizeof(item.descricao) - 1] = '\0'; // Garantir terminação da string
+                token = strtok(NULL, ";");
+                item.quantidade = atoi(token);
+                break; // Sair do loop interno
+        }
+        printf("Identificador: %d\n", item.identificador);
+        printf("Descricao: %s\n", item.descricao);
+        printf("Quantidade: %d\n", item.quantidade);
+        printf("\n\n");
+    }
+
+    fclose(dados); // Fechar o arquivo após a leitura
+    
+}
