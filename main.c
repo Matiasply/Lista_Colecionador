@@ -19,22 +19,26 @@ int main(){
     printf("\nO que deseja fazer? ");
     scanf("%d", &escolha);
 
-    if(escolha == 1){
-        system("cls||clear");
-        dados = cadastrar_item();
-        gerar_arquivo(dados);
+    switch(escolha){
+        case 1:
+            system("cls||clear");
+            dados = cadastrar_item();
+            gerar_arquivo(dados);
+            break;
+        case 2:
+            system("cls||clear");
+            printf("Digite o identificador do item: ");
+            scanf("%d", &identif);
+            consultar_item("colecao.txt", identif);
+            printf("\n\n");
+            break;
+        case 5:
+            system("cls||clear");
+            listar_acervo("colecao.txt");
+            break;
+        default:
+            printf("\nOpcao invalida! Tente novamente.\n\n");
     }
-    if (escolha == 2){
-        system("cls||clear");
-        printf("Digite o identificador do item: ");
-        scanf("%d", &identif);
-
-        consultar_item("colecao.txt", identif);
-    }
-    if (escolha == 5){
-        system("cls||clear");
-        listar_acervo("colecao.txt");
-    }
-}while(escolha != 0);
-    
+    }while(escolha != 0);
+   
 }
