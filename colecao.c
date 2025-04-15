@@ -38,12 +38,12 @@ void gerar_arquivo(Colecao dados){
     fclose(arquivo);
 }
 
-void consultar_item(char *str, int identificador) {
+void consultar_item(char *nome_arquivo, int identificador) {
     Colecao item; // Alterado para uma variável local, em vez de um ponteiro
     char *token, linha[60];
     int encontrado = 0; // Flag para verificar se o item foi encontrado
 
-    FILE *dados = fopen(str, "r");
+    FILE *dados = fopen(nome_arquivo, "r");
 
     if (dados == NULL) {
         printf("Erro ao abrir o arquivo.\n");
@@ -79,12 +79,13 @@ void consultar_item(char *str, int identificador) {
     }
 }
 
-void listar_acervo(char *str) {
-    Colecao item; // Alterado para uma variável local, em vez de um ponteiro
+void listar_acervo(char *nome_arquivo) {
+
+    Colecao item; 
     char *token, linha[60];
     
 
-    FILE *dados = fopen(str, "r");
+    FILE *dados = fopen(nome_arquivo, "r");
 
     if (dados == NULL) {
         printf("Erro ao abrir o arquivo.\n");
