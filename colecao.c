@@ -121,6 +121,7 @@ void remover_item(char *nome_arquivo, int identificador, int *quantidade_itens) 
     Colecao itens[*quantidade_itens];
     char *token, linha[60];
     int j = 0, i;
+    int encontrado = 0; // Flag para verificar se o item foi encontrado
 
     FILE *dados = fopen(nome_arquivo, "r");
     if (dados == NULL) {
@@ -132,6 +133,7 @@ void remover_item(char *nome_arquivo, int identificador, int *quantidade_itens) 
     while (fgets(linha, sizeof(linha), dados)) {
         token = strtok(linha, ";");
         if (token != NULL && atoi(token) == identificador) {
+            encontrado = 1; // Item encontrado para remoção
             // Ignora o item a ser removido
             continue;
         }
@@ -163,6 +165,11 @@ void remover_item(char *nome_arquivo, int identificador, int *quantidade_itens) 
     }
 
     fclose(novo_arquivo); // Fecha o arquivo atualizado
-    printf("Item removido com sucesso!\n");
+    if (!encontrado) {
+        printf("Item inexistente!\n");
+        return;
+    } else {
+        printf("Item removido com sucesso!\n");
+    }
 }
 
