@@ -4,7 +4,7 @@
 
 int main(){
 
-    int escolha, identif;
+    int escolha, identif,cont = 0, *quantidade = &cont;
     Colecao dados;
 
     printf("Bem-vindo!");
@@ -14,6 +14,7 @@ int main(){
     printf("Escolha uma das opcoes:\n\n");
     printf("\n1. Cadastrar item.");
     printf("\n2. Consultar item.");
+    printf("\n3. Remover item.");
     printf("\n5. Listar Acervo.");
     printf("\n0. Sair.");
     printf("\nO que deseja fazer? ");
@@ -22,7 +23,7 @@ int main(){
     switch(escolha){
         case 1:
             system("cls||clear");
-            dados = cadastrar_item();
+            dados = cadastrar_item(quantidade);
             gerar_arquivo(dados);
             break;
         case 2:
@@ -31,6 +32,12 @@ int main(){
             scanf("%d", &identif);
             consultar_item("colecao.txt", identif);
             printf("\n\n");
+            break;
+        case 3:
+            system("cls||clear");
+            printf("Digite o identificador do item: ");
+            scanf("%d", &identif);
+            remover_item("colecao.txt", identif, quantidade);
             break;
         case 5:
             system("cls||clear");
