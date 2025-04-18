@@ -15,6 +15,7 @@ int main(){
     printf("\n1. Cadastrar item.");
     printf("\n2. Consultar item.");
     printf("\n3. Remover item.");
+    printf("\n4. Alterar item.");
     printf("\n5. Listar Acervo.");
     printf("\n0. Sair.");
     printf("\nO que deseja fazer? ");
@@ -38,6 +39,12 @@ int main(){
             printf("Digite o identificador do item: ");
             scanf("%d", &identif);
             remover_item("colecao.txt", identif, quantidade);
+            break;
+        case 4:
+            system("cls||clear");
+            printf("Digite o identificador do item: ");
+            scanf("%d", &identif);
+            alterar_item("colecao.txt", identif);
             break;
         case 5:
             system("cls||clear");

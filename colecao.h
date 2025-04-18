@@ -9,5 +9,5 @@ void limpar_buffer();
 void gerar_arquivo(Colecao dados);
 void consultar_item(char *nome_arquivo, int identificador);
 void remover_item(char *nome_arquivo, int identificador, int *quantidade_itens);
+void alterar_item(char *nome_arquivo, int identificador);
 void listar_acervo(char *nome_arquivo);
-
