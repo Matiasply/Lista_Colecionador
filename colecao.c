@@ -118,7 +118,7 @@ void listar_acervo(char *nome_arquivo) {
 }
 
 void remover_item(char *nome_arquivo, int identificador, int *quantidade_itens) {
-    Colecao itens[*quantidade_itens];
+    Colecao itens[*quantidade_itens - 1];
     char *token, linha[60];
     int j = 0, i;
 
