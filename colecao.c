@@ -41,60 +41,79 @@ void gerar_arquivo(Colecao dados){
     fclose(arquivo);
 }
 
-Colecao cadastrar_item(int *quantidade_itens){
+Colecao cadastrar_item(int *quantidade_itens) {
     Colecao item;
     int aux = 0;
+    int id_valido = 0; // Flag para verificar se o ID é válido
 
-    printf("Digite o identificador do item: ");
-    scanf("%d", &item.identificador);
-    
+    do {
+        id_valido = 1; // Assume que o ID é válido inicialmente
+        printf("Digite o identificador do item: ");
+        scanf("%d", &item.identificador);
+
+        // Verificar se o identificador já existe no arquivo
+        FILE *dados = fopen("colecao.txt", "r");
+        if (dados != NULL) {
+            char linha[60];
+            while (fgets(linha, sizeof(linha), dados)) {
+                int id_existente = atoi(strtok(linha, ";"));
+                if (id_existente == item.identificador) {
+                    printf("Identificador ja existente. Tente novamente.\n");
+                    id_valido = 0; // ID inválido
+                    break;
+                }
+            }
+            fclose(dados);
+        }
+    } while (!id_valido);
+
     printf("\nDigite a descricao: ");
     limpar_buffer(); // Limpa o buffer antes de ler a string
     fgets(item.descricao, 50, stdin);
     // Remover o '\n' caso ele tenha sido lido
     item.descricao[strcspn(item.descricao, "\n")] = '\0';
-    
+
     printf("\nDigite a quantidade: ");
     scanf("%d", &item.quantidade);
-    
+
     aux++; // Conta quantos itens são cadastrados
     *quantidade_itens += aux;
-    
+
     return item;
 }
 
 
 void consultar_item(char *nome_arquivo, int identificador) {
-    Colecao item; // Alterado para uma variável local, em vez de um ponteiro
-    char *token, linha[60];
+    Colecao item; // Variável local para armazenar os dados do item
+    char linha[60];
     int encontrado = 0; // Flag para verificar se o item foi encontrado
 
     FILE *dados = fopen(nome_arquivo, "r");
-
     if (dados == NULL) {
         printf("Erro ao abrir o arquivo.\n");
         return;
     }
 
+    // Lê cada linha do arquivo e tenta encontrar o item com o identificador fornecido
     while (fgets(linha, sizeof(linha), dados)) {
-        token = strtok(linha, ";");
-        while (token != NULL) {
-            if (atoi(token) == identificador) {
-                item.identificador = atoi(token);
-                token = strtok(NULL, ";");
-                strncpy(item.descricao, token, sizeof(item.descricao) - 1);
-                item.descricao[sizeof(item.descricao) - 1] = '\0'; // Garantir terminação da string
-                token = strtok(NULL, ";");
-                item.quantidade = atoi(token);
-                encontrado = 1; // Item encontrado
-                break; // Sair do loop interno
+        int id;
+        char descricao[50];
+        int quantidade;
+
+        // Usa sscanf para extrair os valores da linha
+        if (sscanf(linha, "%d;%49[^;];%d", &id, descricao, &quantidade) == 3) {
+            if (id == identificador) {
+                item.identificador = id;
+                strncpy(item.descricao, descricao, sizeof(item.descricao) - 1);
+                item.descricao[sizeof(item.descricao) - 1] = '\0'; // Garante a terminação da string
+                item.quantidade = quantidade;
+                encontrado = 1; // Marca que o item foi encontrado
+                break;
             }
-            token = strtok(NULL, ";");
         }
-        if (encontrado) break; // Sair do loop externo
     }
 
-    fclose(dados); // Fechar o arquivo após a leitura
+    fclose(dados); // Fecha o arquivo após a leitura
 
     if (!encontrado) {
         printf("Item inexistente!\n");
@@ -138,8 +157,10 @@ void remover_item(char *nome_arquivo, int identificador, int *quantidade_itens) 
 
     fclose(dados); // Fecha o arquivo original
 
-    // Atualiza a quantidade de itens
-    *quantidade_itens = j;
+    if (!encontrado) {
+        printf("Item inexistente!\n");
+        return;
+    }
 
     // Reescreve o arquivo com os itens restantes
     FILE *novo_arquivo = fopen(nome_arquivo, "w");
@@ -153,12 +174,10 @@ void remover_item(char *nome_arquivo, int identificador, int *quantidade_itens) 
     }
 
     fclose(novo_arquivo); // Fecha o arquivo atualizado
-    if (!encontrado) {
-        printf("Item inexistente!\n");
-        return;
-    } else {
-        printf("Item removido com sucesso!\n");
-    }
+    
+    *quantidade_itens = j; // Atualiza a quantidade de itens
+    
+    printf("Item removido com sucesso!\n");
 }
 
 void alterar_item(char *nome_arquivo, int identificador, int *quantidade_itens) {
@@ -241,35 +260,32 @@ void alterar_item(char *nome_arquivo, int identificador, int *quantidade_itens) 
 }
 
 void listar_acervo(char *nome_arquivo) {
+    Colecao item;
+    char linha[60];
 
-    Colecao item; 
-    char *token, linha[60];
-    
-
-    FILE *dados = fopen(nome_arquivo, "r");
-
+    FILE *dados = fopen(nome_arquivo, "r"); // Abre o arquivo no modo leitura
     if (dados == NULL) {
         printf("Erro ao abrir o arquivo.\n");
         return;
     }
 
+    printf("Itens no acervo:\n");
+    printf("-----------------\n");
+
+    // Lê cada linha do arquivo
     while (fgets(linha, sizeof(linha), dados)) {
-        token = strtok(linha, ";");
-        while (token != NULL) { 
-                item.identificador = atoi(token);
-                token = strtok(NULL, ";");
-                strncpy(item.descricao, token, sizeof(item.descricao) - 1);
-                item.descricao[sizeof(item.descricao) - 1] = '\0'; // Garantir terminação da string
-                token = strtok(NULL, ";");
-                item.quantidade = atoi(token);
-                break; // Sair do loop interno
+        int id;
+        char descricao[50];
+        int quantidade;
+
+        // Usa sscanf para extrair os valores da linha
+        if (sscanf(linha, "%d;%49[^;];%d", &id, descricao, &quantidade) == 3) {
+            printf("Identificador: %d\n", id);
+            printf("Descricao: %s\n", descricao);
+            printf("Quantidade: %d\n", quantidade);
+            printf("-----------------\n");
         }
-        printf("Identificador: %d\n", item.identificador);
-        printf("Descricao: %s\n", item.descricao);
-        printf("Quantidade: %d\n", item.quantidade);
-        printf("\n\n");
     }
 
-    fclose(dados); // Fechar o arquivo após a leitura
-    
+    fclose(dados); // Fecha o arquivo após a leitura
 }

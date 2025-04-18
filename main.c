@@ -53,7 +53,8 @@ int main(){
             listar_acervo("colecao.txt");
             break;
         default:
-            printf("\nOpcao invalida! Tente novamente.\n\n");
+            system("cls||clear");
+            printf("Opcao invalida! Tente novamente.\n\n");
     }
     }while(escolha != 0);
    
