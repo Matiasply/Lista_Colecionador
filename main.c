@@ -7,6 +7,8 @@ int main(){
     int escolha, identif,cont = 0, *quantidade = &cont;
     Colecao dados;
 
+    recalcular_quantidade_itens("colecao.txt", quantidade);
+
     printf("Bem-vindo!");
     printf("\n\nEsse programa tem como objetivo cadastrar e consultar itens de uma colecao.\n\n");
     printf("A seguir, ");
@@ -44,7 +46,7 @@ int main(){
             system("cls||clear");
             printf("Digite o identificador do item: ");
             scanf("%d", &identif);
-            alterar_item("colecao.txt", identif);
+            alterar_item("colecao.txt", identif, quantidade);
             break;
         case 5:
             system("cls||clear");

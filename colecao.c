@@ -8,6 +8,27 @@ void limpar_buffer() {
     while ((c = getchar()) != '\n' && c != EOF); // Lê todos os caracteres até encontrar \n ou EOF
 }
 
+void recalcular_quantidade_itens(char *nome_arquivo, int *quantidade_itens) {
+    FILE *dados = fopen(nome_arquivo, "r");
+    if (dados == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        *quantidade_itens = 0; // Se o arquivo não puder ser aberto, não há itens
+        return;
+    }
+
+    char linha[60];
+    int contador = 0;
+
+    // Conta o número de linhas no arquivo
+    while (fgets(linha, sizeof(linha), dados)) {
+        contador++;
+    }
+
+    fclose(dados);
+
+    *quantidade_itens = contador; // Atualiza o valor de quantidade_itens
+}
+
 void gerar_arquivo(Colecao dados){
     FILE *arquivo = fopen("colecao.txt", "a");
     if (arquivo == NULL) {
@@ -140,35 +161,34 @@ void remover_item(char *nome_arquivo, int identificador, int *quantidade_itens) 
     }
 }
 
-void alterar_item(char *nome_arquivo, int identificador) {
-    Colecao item;
+void alterar_item(char *nome_arquivo, int identificador, int *quantidade_itens) {
+    Colecao itens[*quantidade_itens]; 
+    int j = 0;
     char *token, linha[60];
-    int encontrado = 0;
-
+    
     FILE *dados = fopen(nome_arquivo, "r");
     if (dados == NULL) {
         printf("Erro ao abrir o arquivo.\n");
         return;
     }
-
-    // Carregar todos os itens em memória
-    Colecao itens[100]; // Supondo um limite de 100 itens
-    int total_itens = 0;
+    
+    Colecao item;
+    int encontrado = 0;
 
     while (fgets(linha, sizeof(linha), dados)) {
         token = strtok(linha, ";");
-        itens[total_itens].identificador = atoi(token);
+        itens[j].identificador = atoi(token);
         token = strtok(NULL, ";");
-        strncpy(itens[total_itens].descricao, token, sizeof(itens[total_itens].descricao) - 1);
-        itens[total_itens].descricao[sizeof(itens[total_itens].descricao) - 1] = '\0';
+        strncpy(itens[j].descricao, token, sizeof(itens[j].descricao) - 1);
+        itens[j].descricao[sizeof(itens[j].descricao) - 1] = '\0';
         token = strtok(NULL, ";");
-        itens[total_itens].quantidade = atoi(token);
+        itens[j].quantidade = atoi(token);
 
-        if (itens[total_itens].identificador == identificador) {
+        if (itens[j].identificador == identificador) {
             encontrado = 1;
-            item = itens[total_itens];
+            item = itens[j];
         }
-        total_itens++;
+        j++;
     }
     fclose(dados);
 
@@ -186,7 +206,7 @@ void alterar_item(char *nome_arquivo, int identificador) {
             printf("Digite a nova descricao: ");
             limpar_buffer();
             fgets(item.descricao, sizeof(item.descricao), stdin);
-            item.descricao[strcspn(item.descricao, "\n")] = '\0';
+            item.descricao[strcspn(item.descricao, "\n")] = '\0'; // Finaliza a string
             break;
         case 2:
             printf("Digite a nova quantidade: ");
@@ -198,7 +218,7 @@ void alterar_item(char *nome_arquivo, int identificador) {
     }
 
     // Atualizar o item na lista
-    for (int i = 0; i < total_itens; i++) {
+    for (int i = 0; i < j; i++) {
         if (itens[i].identificador == identificador) {
             itens[i] = item;
             break;
@@ -212,7 +232,7 @@ void alterar_item(char *nome_arquivo, int identificador) {
         return;
     }
 
-    for (int i = 0; i < total_itens; i++) {
+    for (int i = 0; i < j; i++) {
         fprintf(dados, "%d;%s;%d\n", itens[i].identificador, itens[i].descricao, itens[i].quantidade);
     }
     fclose(dados);
